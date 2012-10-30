@@ -1,0 +1,4 @@
+entry: Init_Mprodigy_extension	
+javaentry: com.mprodigy.Mprodigy
+android_additional_sources_list: ext/mprodigy/platform/android/ext_build.files
+libraries: ["Mprodigy"]
