@@ -3,7 +3,7 @@
 %{
 #include "ruby/ext/rho/rhoruby.h"
 
-extern VALUE mprodigy_native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other);
+extern VALUE mprodigy_native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other, const char* username);
 #define native_sessionBegin mprodigy_native_sessionBegin 
 
 extern void mprodigy_native_sessionEnd(const char* sessionId);
@@ -17,7 +17,7 @@ extern void mprodigy_native_userLogout(const char* userId);
 
 %}
 
-extern VALUE native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other);
+extern VALUE native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other, const char* username);
 extern void native_sessionEnd(const char* sessionId);
 extern VALUE native_userLogin(const char* sessionId, const char* username);
 extern void native_userLogout(const char* userId);

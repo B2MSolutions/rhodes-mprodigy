@@ -10,21 +10,22 @@ public class Mprodigy {
 
     static MprodigyServiceConnection connection = null;
 
-   	public static String sessionBegin(String applicationId, String version, String instance, String other) {
+   	public static String sessionBegin(String applicationId, String version, String instance, String other, String username) {
         Logger.D("Mprodigy", "sessionBegin");
 
         String sessionId = java.util.UUID.randomUUID().toString();
+        
+        Bundle[] initialMessages = new Bundle[1];
+        if(username != "") {
+            initialMessages = new Bundle[2];
+        }
 
-        // Create and send a message to the service, using a supported 'what' value
-        Bundle bundle = new Bundle();
-        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.SessionBegin);
-        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
-        bundle.putString(MprodigyConstants.APIField.ApplicationId, applicationId);
-        bundle.putString(MprodigyConstants.APIField.Version, version);
-        bundle.putString(MprodigyConstants.APIField.Instance, instance);
-        bundle.putString(MprodigyConstants.APIField.Other, other);
+        initialMessages[0] = MprodigyBundle.getSessionBegin(sessionId, applicationId, version, instance, other);
+        if(username != "") {
+            initialMessages[1] = MprodigyBundle.getUserLogin(sessionId, sessionId, username);
+        }
 
-        connection = MprodigyServiceConnection.initialSend(bundle);
+        connection = MprodigyServiceConnection.initialSend(initialMessages);
 
         return sessionId;
 	}
@@ -32,15 +33,10 @@ public class Mprodigy {
 	public static void sessionEnd(String sessionId) {
         Logger.D("Mprodigy", String.format("sessionEnd: %s", sessionId));
 
-        // Create and send a message to the service, using a supported 'what' value
-        Bundle bundle = new Bundle();
-        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.SessionEnd);
-        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
+        Bundle bundle = MprodigyBundle.getSessionEnd(sessionId);
 
         connection.send(bundle);
         connection.close();
-
-        return;
 	}
 
 	public static String userLogin(String sessionId, String username) {
@@ -48,13 +44,7 @@ public class Mprodigy {
 
         String userId = java.util.UUID.randomUUID().toString();
 
-        // Create and send a message to the service, using a supported 'what' value
-        Bundle bundle = new Bundle();
-        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.UserLogin);
-        bundle.putString(MprodigyConstants.APIField.UserId, userId);
-        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
-        bundle.putString(MprodigyConstants.APIField.Username, username);
-
+        Bundle bundle = MprodigyBundle.getUserLogin(sessionId, userId, username);
         connection.send(bundle);
 
         return userId;
@@ -63,13 +53,6 @@ public class Mprodigy {
 	public static void userLogout(String userId) {
         Logger.D("Mprodigy", String.format("userLogout: %s", userId));
 
-        // Create and send a message to the service, using a supported 'what' value
-        Bundle bundle = new Bundle();
-        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.UserLogout);
-        bundle.putString(MprodigyConstants.APIField.UserId, userId);
-
-        connection.send(bundle);
-
-        return;
-	}
+        connection.send(MprodigyBundle.getUserLogout(userId));
+	}    
 }

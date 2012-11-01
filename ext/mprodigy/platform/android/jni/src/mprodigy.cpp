@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "ruby/ext/rho/rhoruby.h"
 
-extern "C" VALUE mprodigy_native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other) {
+extern "C" VALUE mprodigy_native_sessionBegin(const char* applicationId, const char* version, const char* instance, const char* other, const char* username) {
 
     JNIEnv *env = jnienv();
 
@@ -12,7 +12,7 @@ extern "C" VALUE mprodigy_native_sessionBegin(const char* applicationId, const c
         return rho_ruby_get_NIL();
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "sessionBegin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
+    jmethodID mid = env->GetStaticMethodID(cls, "sessionBegin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
     if (!mid) {
         return rho_ruby_get_NIL();
     }
@@ -21,12 +21,14 @@ extern "C" VALUE mprodigy_native_sessionBegin(const char* applicationId, const c
     jstring objVersion = env->NewStringUTF(version);
     jstring objInstance = env->NewStringUTF(instance);
     jstring objOther = env->NewStringUTF(other);
-    jstring objSession = (jstring)env->CallStaticObjectMethod(cls, mid, objApplicationId, objVersion, objInstance, objOther);
+    jstring objUsername = env->NewStringUTF(username);
+    jstring objSession = (jstring)env->CallStaticObjectMethod(cls, mid, objApplicationId, objVersion, objInstance, objOther, objUsername);
 
     env->DeleteLocalRef(objApplicationId);
     env->DeleteLocalRef(objVersion);
     env->DeleteLocalRef(objInstance);
     env->DeleteLocalRef(objOther);
+    env->DeleteLocalRef(objUsername);
 
     const char* buf = env->GetStringUTFChars(objSession,0);
     VALUE result = rho_ruby_create_string(buf);

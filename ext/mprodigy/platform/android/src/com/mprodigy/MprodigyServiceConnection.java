@@ -11,19 +11,19 @@ public class MprodigyServiceConnection implements ServiceConnection {
 
     private Messenger service;
 
-    private Bundle initialMessage;
+    private Bundle[] initialMessages;
 
-    private MprodigyServiceConnection(Bundle initialMessage) {
+    private MprodigyServiceConnection(Bundle[] initialMessages) {
         Logger.D("MprodigyServiceConnection", "construction");
         this.service = null;
         this.bound = false;
-        this.initialMessage = initialMessage;
+        this.initialMessages = initialMessages;
         this.bind();
     }
 
-    public static MprodigyServiceConnection initialSend(Bundle initialMessage) {
+    public static MprodigyServiceConnection initialSend(Bundle[] initialMessages) {
         Logger.D("MprodigyServiceConnection", "initialSend");
-        return new MprodigyServiceConnection(initialMessage);
+        return new MprodigyServiceConnection(initialMessages);
     } 
 
     public void close() {
@@ -35,8 +35,12 @@ public class MprodigyServiceConnection implements ServiceConnection {
         Logger.D("MprodigyServiceConnection", "onServiceConnected");
         this.service = new Messenger(binder);
         this.bound = true;
-        this.send(this.initialMessage);
-        this.initialMessage = null;
+        
+        for(Bundle b: initialMessages) {
+            this.send(b);    
+        }
+        
+        this.initialMessages = new Bundle[0];
     }
 
     public void onServiceDisconnected(ComponentName className) {
