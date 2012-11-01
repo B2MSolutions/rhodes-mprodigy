@@ -3,70 +3,69 @@ module Mprodigy
   class API
 
     def self.instrument
-      # just here for monkey patching
+      # just here to initiate monkey patching
       RhoLog::info('Mprodigy::API', 'instrument')
     end
 
-    def self.sessionBegin(applicationId, version, instance, other)
-       return Mprodigy::native_sessionBegin(applicationId, version, instance, other)
-    end 
-
-    def self.sessionEnd(sessionId)
-       return Mprodigy::native_sessionEnd(sessionId)
-    end 
-
-    def self.userLogin(sessionId, username)
-       return Mprodigy::native_userLogin(sessionId, username)
-    end 
-
-    def self.userLogout(userId)
-       return Mprodigy::native_userLogout(userId)
-    end 
-      
   end
 
 end
 
-# monkey patching sync engine to instrument session start and end
+# monkey patching RhoApplication
 module Rho
 
   class RhoApplication
 
+    # patched methods
     alias_method :orig_on_activate_app, :on_activate_app
     alias_method :orig_on_deactivate_app, :on_deactivate_app
-    alias_method :orig_on_sync_user_changed, :on_sync_user_changed
-    alias_method :orig_on_ui_created, :on_ui_created
-    alias_method :orig_on_ui_destroyed, :on_ui_destroyed
 
     def on_activate_app
-      RhoLog::info("mProdigy::RhoApplication::on_activate_app", SyncEngine.logged_in)
+      # RhoLog::info("mProdigy::RhoApplication", "on_activate_app")
+      mprodigy_sessionBegin
       orig_on_activate_app
     end
 
     def on_deactivate_app
-      RhoLog::info("mProdigy::RhoApplication::on_deactivate_app", SyncEngine.logged_in)
+      # RhoLog::info("mProdigy::RhoApplication::on_deactivate_app", SyncEngine.logged_in)
+      mprodigy_sessionEnd
       orig_on_deactivate_app
     end
 
-    def on_sync_user_changed
-      RhoLog::info("mProdigy::RhoApplication::on_sync_user_changed", SyncEngine.logged_in)
-      orig_on_sync_user_changed
-    end 
+    # mprodigy api methods
+    def mprodigy_sessionBegin
+      mprodigy_sessionEnd
+      username = ''    
+      if SyncEngine::logged_in == 1
+        username = SyncEngine::get_user_name
+      end
 
-    def on_ui_created    
-      RhoLog::info("mProdigy::RhoApplication::on_ui_created", SyncEngine.logged_in)
-      orig_on_ui_created
+      @mprodigy_sessionId = Mprodigy::native_sessionBegin('store', '1.1', '', '', username)
+    end
+    
+    def mprodigy_sessionEnd
+      mprodigy_userLogout
+      if @mprodigy_sessionId.to_s != ''
+        Mprodigy::native_sessionEnd(@mprodigy_sessionId)
+        @mprodigy_sessionId = ''
+      end
     end
 
-    def on_ui_destroyed
-      RhoLog::info("mProdigy::RhoApplication::on_ui_destroyed", SyncEngine.logged_in)
-      orig_on_ui_destroyed
+    def mprodigy_userLogin(username)      
+      mprodigy_userLogout
+      @mprodigy_userId = Mprodigy::native_userLogin(@mprodigy_sessionId, username)
+    end
+
+    def mprodigy_userLogout
+       if @mprodigy_userId.to_s != ''
+        Mprodigy::native_userLogout(@mprodigy_userId)
+        @mprodigy_userId = ''
+      end
     end
 
   end
 
 end
-
 
 # monkey patching sync engine to instrument login and logout
 module SyncEngine
@@ -77,12 +76,14 @@ module SyncEngine
   end
   
   def self.login(user, password, callback_url)
-    RhoLog::info('Mprodigy::SyncEngine', 'login')    
+    # RhoLog::info('Mprodigy::SyncEngine', 'login')
+    ::Rho.get_app.mprodigy_userLogin(user)
     orig_login(user, password, callback_url)
   end
 
   def self.logout
-    RhoLog::info('Mprodigy::SyncEngine::logout', 'logout')
+    # RhoLog::info('Mprodigy::SyncEngine::logout', 'logout')
+    ::Rho.get_app.mprodigy_userLogout
     orig_logout
   end
 

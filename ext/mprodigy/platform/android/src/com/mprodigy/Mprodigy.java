@@ -16,12 +16,12 @@ public class Mprodigy {
         String sessionId = java.util.UUID.randomUUID().toString();
         
         Bundle[] initialMessages = new Bundle[1];
-        if(username != "") {
+        if(username.length() > 0) {
             initialMessages = new Bundle[2];
         }
 
         initialMessages[0] = MprodigyBundle.getSessionBegin(sessionId, applicationId, version, instance, other);
-        if(username != "") {
+        if(username.length() > 0) {
             initialMessages[1] = MprodigyBundle.getUserLogin(sessionId, sessionId, username);
         }
 
