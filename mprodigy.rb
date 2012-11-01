@@ -41,7 +41,7 @@ module SyncEngine
   end
 
   def self.logout
-    RhoLog::info('Mprodigy::SyncEngine::logout', logout)
+    RhoLog::info('Mprodigy::SyncEngine::logout')
     orig_logout
   end
 
