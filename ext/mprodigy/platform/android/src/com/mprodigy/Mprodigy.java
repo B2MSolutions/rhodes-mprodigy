@@ -17,12 +17,12 @@ public class Mprodigy {
 
         // Create and send a message to the service, using a supported 'what' value
         Bundle bundle = new Bundle();
-        bundle.putString("Operation", "SessionBegin");
-        bundle.putString("SessionId", sessionId);
-        bundle.putString("ApplicationId", applicationId);
-        bundle.putString("Version", version);
-        bundle.putString("Instance", instance);
-        bundle.putString("Other", other);
+        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.SessionBegin);
+        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
+        bundle.putString(MprodigyConstants.APIField.ApplicationId, applicationId);
+        bundle.putString(MprodigyConstants.APIField.Version, version);
+        bundle.putString(MprodigyConstants.APIField.Instance, instance);
+        bundle.putString(MprodigyConstants.APIField.Other, other);
 
         connection = MprodigyServiceConnection.initialSend(bundle);
 
@@ -34,8 +34,8 @@ public class Mprodigy {
 
         // Create and send a message to the service, using a supported 'what' value
         Bundle bundle = new Bundle();
-        bundle.putString("Operation", "SessionEnd");
-        bundle.putString("SessionId", sessionId);
+        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.SessionEnd);
+        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
 
         connection.send(bundle);
         connection.close();
@@ -50,10 +50,10 @@ public class Mprodigy {
 
         // Create and send a message to the service, using a supported 'what' value
         Bundle bundle = new Bundle();
-        bundle.putString("Operation", "UserLogin");
-        bundle.putString("UserId", userId);
-        bundle.putString("SessionId", sessionId);
-        bundle.putString("Username", username);
+        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.UserLogin);
+        bundle.putString(MprodigyConstants.APIField.UserId, userId);
+        bundle.putString(MprodigyConstants.APIField.SessionId, sessionId);
+        bundle.putString(MprodigyConstants.APIField.Username, username);
 
         connection.send(bundle);
 
@@ -65,8 +65,8 @@ public class Mprodigy {
 
         // Create and send a message to the service, using a supported 'what' value
         Bundle bundle = new Bundle();
-        bundle.putString("Operation", "UserLogout");
-        bundle.putString("UserId", userId);
+        bundle.putString(MprodigyConstants.APIField.Operation, MprodigyConstants.Operation.UserLogout);
+        bundle.putString(MprodigyConstants.APIField.UserId, userId);
 
         connection.send(bundle);
 
