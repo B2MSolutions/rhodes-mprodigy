@@ -2,6 +2,10 @@ module Mprodigy
 
   class API
 
+    def self.instrument
+      # just here for monkey patching
+    end
+
     def self.sessionBegin(applicationId, version, instance, other)
        return Mprodigy::native_sessionBegin(applicationId, version, instance, other)
     end 
