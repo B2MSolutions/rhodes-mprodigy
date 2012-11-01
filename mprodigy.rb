@@ -27,15 +27,57 @@ module Mprodigy
 
 end
 
+# monkey patching sync engine to instrument session start and end
+module Rho
+
+  class RhoApplication
+
+    alias_method :orig_on_activate_app, :on_activate_app
+    alias_method :orig_on_deactivate_app, :on_deactivate_app
+    alias_method :orig_on_sync_user_changed, :on_sync_user_changed
+    alias_method :orig_on_ui_created, :on_ui_created
+    alias_method :orig_on_ui_destroyed, :on_ui_destroyed
+
+    def on_activate_app
+      RhoLog::info("mProdigy::RhoApplication::on_activate_app", SyncEngine.logged_in)
+      orig_on_activate_app
+    end
+
+    def on_deactivate_app
+      RhoLog::info("mProdigy::RhoApplication::on_deactivate_app", SyncEngine.logged_in)
+      orig_on_deactivate_app
+    end
+
+    def on_sync_user_changed
+      RhoLog::info("mProdigy::RhoApplication::on_sync_user_changed", SyncEngine.logged_in)
+      orig_on_sync_user_changed
+    end 
+
+    def on_ui_created    
+      RhoLog::info("mProdigy::RhoApplication::on_ui_created", SyncEngine.logged_in)
+      orig_on_ui_created
+    end
+
+    def on_ui_destroyed
+      RhoLog::info("mProdigy::RhoApplication::on_ui_destroyed", SyncEngine.logged_in)
+      orig_on_ui_destroyed
+    end
+
+  end
+
+end
+
+
 # monkey patching sync engine to instrument login and logout
 module SyncEngine
+
   class << self
     alias_method :orig_login, :login
     alias_method :orig_logout, :logout
   end
   
   def self.login(user, password, callback_url)
-    RhoLog::info('Mprodigy::SyncEngine', 'login')
+    RhoLog::info('Mprodigy::SyncEngine', 'login')    
     orig_login(user, password, callback_url)
   end
 
