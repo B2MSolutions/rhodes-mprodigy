@@ -27,9 +27,9 @@ end
 end
 
 module SyncEngine
-  alias self.oldlogin self.login
+  alias oldlogin login
 
-  alias self.oldlogout self.logout
+  alias oldlogout logout
   
   def self.login(login, password, callback_url)
     RhoLog::info('Mprodigy::SyncEngine::login', login)
