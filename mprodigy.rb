@@ -2,9 +2,11 @@ module Mprodigy
 
   class API
 
-    def self.instrument
-      # just here for monkey patching
-    end
+    # def self.instrument
+    #   # just here for monkey patching
+    #   RhoLog::info('Mprodigy::API', 'instrument')
+    #   return
+    # end
 
     def self.sessionBegin(applicationId, version, instance, other)
        return Mprodigy::native_sessionBegin(applicationId, version, instance, other)
@@ -26,19 +28,21 @@ module Mprodigy
 
 end
 
+# monkey patching sync engine to instrument login and logout
 module SyncEngine
-  alias oldlogin login
-
-  alias oldlogout logout
+  class << self
+    alias_method :orig_login, :login
+    alias_method :orig_logout, :logout
+  end
   
-  def self.login(login, password, callback_url)
-    RhoLog::info('Mprodigy::SyncEngine::login', login)
-    self.oldlogin(login, password, callback_url)
+  def self.login(user, password, callback_url)
+    RhoLog::info('Mprodigy::SyncEngine::login', user)
+    orig_login(user, password, callback_url)
   end
 
   def self.logout
     RhoLog::info('Mprodigy::SyncEngine::logout', logout)
-    self.oldlogout
+    orig_logout
   end
 
 end
