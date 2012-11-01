@@ -36,12 +36,12 @@ module SyncEngine
   end
   
   def self.login(user, password, callback_url)
-    RhoLog::info('Mprodigy::SyncEngine::login', user)
+    RhoLog::info('Mprodigy::SyncEngine', 'login')
     orig_login(user, password, callback_url)
   end
 
   def self.logout
-    RhoLog::info('Mprodigy::SyncEngine::logout')
+    RhoLog::info('Mprodigy::SyncEngine::logout', 'logout')
     orig_logout
   end
 
