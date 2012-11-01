@@ -2,11 +2,10 @@ module Mprodigy
 
   class API
 
-    # def self.instrument
-    #   # just here for monkey patching
-    #   RhoLog::info('Mprodigy::API', 'instrument')
-    #   return
-    # end
+    def self.instrument
+      # just here for monkey patching
+      RhoLog::info('Mprodigy::API', 'instrument')
+    end
 
     def self.sessionBegin(applicationId, version, instance, other)
        return Mprodigy::native_sessionBegin(applicationId, version, instance, other)
