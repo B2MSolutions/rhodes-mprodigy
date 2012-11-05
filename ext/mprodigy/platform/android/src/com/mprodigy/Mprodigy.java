@@ -2,6 +2,7 @@ package com.mprodigy;
 
 import android.os.*;
 import android.content.*;
+import android.content.pm.*;
 
 import com.rhomobile.rhodes.*;
 import com.mprodigy.*;
@@ -14,7 +15,15 @@ public class Mprodigy {
         Logger.D("Mprodigy", "sessionBegin");
 
         String sessionId = java.util.UUID.randomUUID().toString();
-        
+
+        if(applicationId.length() == 0) {
+            applicationId = getPackageName();
+        }
+
+        if(version.length() == 0) {
+            version = getPackageVersion();
+        }
+
         Bundle[] initialMessages = new Bundle[1];
         if(username.length() > 0) {
             initialMessages = new Bundle[2];
@@ -54,5 +63,22 @@ public class Mprodigy {
         Logger.D("Mprodigy", String.format("userLogout: %s", userId));
 
         connection.send(MprodigyBundle.getUserLogout(userId));
-	}    
+	} 
+
+    private static String getPackageName() {
+        Context ctx = RhodesService.getContext();
+        return ctx.getPackageName(); 
+    }
+
+    private static String getPackageVersion() {
+        try {
+            Context ctx = RhodesService.getContext();
+            PackageInfo packageInfo = ctx.getPackageManager().getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;    
+        } catch(Exception e) {
+            Logger.E("Mprodigy", e);
+            return "";
+        }                
+    }
+
 }

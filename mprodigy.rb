@@ -21,29 +21,34 @@ module Rho
     alias_method :orig_on_deactivate_app, :on_deactivate_app
 
     def on_activate_app
-      # RhoLog::info("mProdigy::RhoApplication", "on_activate_app")
+      # RhoLog::info("mProdigy::RhoApplication::on_activate_app", "")
       mprodigy_sessionBegin
       orig_on_activate_app
     end
 
     def on_deactivate_app
-      # RhoLog::info("mProdigy::RhoApplication::on_deactivate_app", SyncEngine.logged_in)
+      # RhoLog::info("mProdigy::RhoApplication::on_deactivate_app", "")
       mprodigy_sessionEnd
       orig_on_deactivate_app
     end
 
     # mprodigy api methods
     def mprodigy_sessionBegin
+      # RhoLog::info("mProdigy::RhoApplication::mprodigy_sessionBegin", "") 
       mprodigy_sessionEnd
       username = ''    
       if SyncEngine::logged_in == 1
         username = SyncEngine::get_user_name
       end
 
-      @mprodigy_sessionId = Mprodigy::native_sessionBegin('store', '1.1', '', '', username)
+      @mprodigy_sessionId = Mprodigy::native_sessionBegin('', '', '', '', username)
+      if SyncEngine::logged_in == 1
+        @mprodigy_userId = @mprodigy_sessionId
+      end
     end
     
     def mprodigy_sessionEnd
+      # RhoLog::info("mProdigy::RhoApplication::mprodigy_sessionEnd", "") 
       mprodigy_userLogout
       if @mprodigy_sessionId.to_s != ''
         Mprodigy::native_sessionEnd(@mprodigy_sessionId)
@@ -51,12 +56,15 @@ module Rho
       end
     end
 
-    def mprodigy_userLogin(username)      
+    def mprodigy_userLogin(username)
+      # RhoLog::info("mProdigy::RhoApplication::mprodigy_userLogin before", @mprodigy_userId)      
       mprodigy_userLogout
       @mprodigy_userId = Mprodigy::native_userLogin(@mprodigy_sessionId, username)
+      # RhoLog::info("mProdigy::RhoApplication::mprodigy_userLogin after", @mprodigy_userId)
     end
 
     def mprodigy_userLogout
+      # RhoLog::info("mProdigy::RhoApplication::mprodigy_userLogout", @mprodigy_userId)      
        if @mprodigy_userId.to_s != ''
         Mprodigy::native_userLogout(@mprodigy_userId)
         @mprodigy_userId = ''
@@ -82,7 +90,7 @@ module SyncEngine
   end
 
   def self.logout
-    # RhoLog::info('Mprodigy::SyncEngine::logout', 'logout')
+    #RhoLog::info('Mprodigy::SyncEngine::logout', 'logout')
     ::Rho.get_app.mprodigy_userLogout
     orig_logout
   end
