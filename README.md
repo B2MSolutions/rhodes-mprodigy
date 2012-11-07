@@ -18,8 +18,10 @@ Start a terminal window and cd to the root directory of your Rhodes application,
 
 Now add the configuration to auto-instrument your application:
 In *build.yaml* add the following:
-	
-	extensions: ["mprodigy"]
+
+```ruby	
+extensions: ["mprodigy"]
+```
 
 Ensure your main application ruby file (the one that inherits from Rho::RhoApplication and is normally in app/application.rb) has the call to *Mprodigy::API::instrument* after the call to *super* as follows:
 
