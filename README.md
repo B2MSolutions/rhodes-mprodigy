@@ -23,19 +23,21 @@ In *build.yaml* add the following:
 
 Ensure your main application ruby file (the one that inherits from Rho::RhoApplication and is normally in app/application.rb) has the call to *Mprodigy::API::instrument* after the call to *super* as follows:
 
-	require 'rho/rhoapplication'
-	require 'mprodigy'
+```ruby
+require 'rho/rhoapplication'
+require 'mprodigy'
 
-	class AppApplication < Rho::RhoApplication
-	  
-	  def initialize
-	    # Initialization before call to super
-	    super
-		Mprodigy::API::instrument
+class AppApplication < Rho::RhoApplication
+  
+  def initialize
+    # Initialization before call to super
+    super
+	Mprodigy::API::instrument
 
-	    # Initialization after call to super...
-	  end	  
-	end
+    # Initialization after call to super...
+  end	  
+end
+```
 
 ## Examples
 We have forked Rhostore sample application refered to in the [rhomobile documentation](http://docs.rhomobile.com/), and configured it to use rhodes-mprodigy. It is available [here](https://github.com/B2MSolutions/store).
