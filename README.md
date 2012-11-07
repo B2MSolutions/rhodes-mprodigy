@@ -5,7 +5,9 @@
 
 [mprodigy](http://www.b2m-solutions.com/products-and-services/mprodigy/overview.aspx) Mobility Intelligence Platform provides information to enable effective strategic, tactical, and operational insights and decision-making for populations of mobile devices. This includes a comprehensive portfolio of operational, tactical and strategic analytics and dashboards.
 
-[rhodes-mprodigy](https://github.com/B2MSolutions/rhodes-mprodigy) is an extension that auto-instruments Rhodes applications enabling strategic application analytics within mprodigy. It requires the device to be managed by mprodigy, for instance, using the android mprodigy client.
+[rhodes-mprodigy](https://github.com/B2MSolutions/rhodes-mprodigy) is an extension that auto-instruments Rhodes applications enabling strategic application analytics within mprodigy. It requires the device to be managed by mprodigy, for instance, using the android mprodigy client. If the device client is unavailable the instrumentation will have no effect to the running of the application.
+
+If you need access to mprodigy integration servers to test you application instrumentation please [contact us](http://www.b2m-solutions.com/company/contact.aspx).
 
 ## Installation
 [rhodes-mprodigy](https://github.com/B2MSolutions/rhodes-mprodigy) is a standard native extension for Rhodes and should be installed in the extensions folder of your application. 
@@ -42,4 +44,4 @@ end
 ```
 
 ## Examples
-We have forked Rhostore sample application refered to in the [rhomobile documentation](http://docs.rhomobile.com/), and configured it to use rhodes-mprodigy. It is available [here](https://github.com/B2MSolutions/store).
+We have forked the [Rhostore](https://github.com/B2MSolutions/store) sample application refered to in the [rhomobile documentation](http://docs.rhomobile.com/), and configured it to use rhodes-mprodigy. It is available [here](https://github.com/B2MSolutions/store).
